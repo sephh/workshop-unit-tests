@@ -1,1 +1,29 @@
-<p>task-list works!</p>
+<mat-selection-list
+  class="loc-task-list"
+  *ngIf="tasks?.length"
+  (selectionChange)="updateTasks($event)"
+>
+
+  <mat-list-option
+    class="loc-task-list__item"
+    *ngFor="let task of tasks"
+    [color]="'primary'"
+    [checkboxPosition]="'before'"
+    [value]="task.id"
+  >
+
+    <loc-task-item
+      [task]="task"
+      (removeTask)="remove.emit($event)"
+    ></loc-task-item>
+
+  </mat-list-option>
+
+</mat-selection-list>
+
+<loc-item-not-found
+  *ngIf="!tasks?.length"
+  [label]="'Nenhuma tarefa cadastrada até o momento.'"
+  [buttonLabel]="'Nova tarefa'"
+  (add)="add.emit()"
+></loc-item-not-found>

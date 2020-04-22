@@ -1,6 +1,6 @@
 <main class="loc-tasks">
 
-  <section class="loc-tasks__content">
+  <section class="loc-tasks__content container">
 
     <div class="loc-tasks__header">
 
@@ -9,13 +9,54 @@
       <button
         mat-flat-button
         color="accent"
+        (click)="addEmptyTask()"
       >
-        Adicionar tarefa
+        <div class="loc-tasks__add-button">
+          <mat-icon>add</mat-icon>
+          Adicionar tarefa
+        </div>
       </button>
 
     </div>
 
-    <div class="loc-tasks__body"></div>
+    <div class="loc-tasks__body">
+
+      <div class="row">
+
+        <div class="col-md-12">
+
+          <mat-card class="example-card">
+
+            <div class="loc-tasks__controllers">
+
+              <mat-form-field
+                class="loc-tasks__search-input"
+                appearance="fill"
+              >
+                <mat-label>Encontre sua tarefa</mat-label>
+
+                <input matInput placeholder="Digite o nome da sua tarefa">
+
+                <mat-icon matSuffix>search</mat-icon>
+
+              </mat-form-field>
+            </div>
+
+            <mat-card-content>
+              <loc-task-list
+                [tasks]="tasks"
+                (add)="addEmptyTask()"
+                (remove)="removeTask($event)"
+              ></loc-task-list>
+            </mat-card-content>
+
+          </mat-card>
+
+        </div>
+
+      </div>
+
+    </div>
 
   </section>
 

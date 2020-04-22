@@ -1,0 +1,44 @@
+@mixin active-controllers(){
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.loc-task-item {
+  &--selected {
+    text-decoration: line-through;
+  }
+
+  &:hover{
+    .loc-task-item__controllers {
+      @include active-controllers;
+    }
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__label {
+  }
+
+  &__form {
+    width: 100%;
+    .mat-form-field{
+      width: 100%;
+    }
+  }
+
+  &__controllers {
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+
+    transition: opacity 0.3s ease-in-out;
+
+    &--active{
+      @include active-controllers;
+    }
+  }
+}

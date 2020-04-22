@@ -1,0 +1,8 @@
+.loc-item-not-found{
+  border-radius: $border-radius;
+  background-color: $light-grey;
+
+  &__label, &__icon{
+    color: $text-muted;
+  }
+}

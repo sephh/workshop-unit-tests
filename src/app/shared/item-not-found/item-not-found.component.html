@@ -1,0 +1,23 @@
+<div class="loc-item-not-found">
+
+  <div class="loc-item-not-found__icon">
+    <mat-icon>sms_failed</mat-icon>
+  </div>
+
+  <div class="loc-item-not-found__label">
+    {{label}}
+  </div>
+
+  <div class="loc-item-not-found__button" *ngIf="canAdd">
+
+    <button
+      mat-flat-button
+      color="accent"
+      (click)="onAdd()"
+    >
+      {{buttonLabel}}
+    </button>
+
+  </div>
+
+</div>

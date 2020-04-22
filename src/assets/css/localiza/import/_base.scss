@@ -1,6 +1,19 @@
-html, body { height: 100%; }
+html, body {
+  font-size: 16px;
+  height: 100%;
+}
+
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: $primary-color;
+  font-family: LocalizaDinDisplay_Light, OpenSans, "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: $light-grey;
+}
+
+h1{
+  font-size: 2rem;
+}
+
+h2{
+  font-size: 1.5rem;
 }

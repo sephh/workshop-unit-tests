@@ -1,13 +1,25 @@
 .loc-tasks {
   &__content {
-    max-width: 1440px;
-    margin: 0 auto;
   }
 
   &__header {
+    margin-bottom: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  &__add-button{
+    display: flex;
+    align-items: center;
+  }
+
+  &__controllers{
+    display: flex;
+  }
+
+  &__search-input{
+    width: 100%;
   }
 
   &__body {

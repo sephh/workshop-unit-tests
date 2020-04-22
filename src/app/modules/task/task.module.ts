@@ -7,6 +7,13 @@ import { TaskControllerComponent } from './components/task-controller/task-contr
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {TaskRoutingModule} from './task-routing.module';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatListModule} from '@angular/material/list';
+import {MatCardModule} from '@angular/material/card';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {ItemNotFoundModule} from '../../shared/item-not-found/item-not-found.module';
+import {ReactiveFormsModule} from '@angular/forms';
 
 
 
@@ -21,9 +28,16 @@ import {TaskRoutingModule} from './task-routing.module';
     CommonModule,
     MatButtonModule,
     MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
 
     // Routing
-    TaskRoutingModule
+    TaskRoutingModule,
+    MatListModule,
+    MatCardModule,
+    DragDropModule,
+    ItemNotFoundModule,
+    ReactiveFormsModule,
   ]
 })
 export class TaskModule { }

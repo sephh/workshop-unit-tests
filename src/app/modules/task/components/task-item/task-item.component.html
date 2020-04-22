@@ -1,1 +1,53 @@
-<p>task-item works!</p>
+<div class="loc-task-item" *ngIf="task">
+
+  <div class="loc-task-item__content" *ngIf="!task?.editing">
+
+    <div class="loc-task-item__label">{{task.label}}</div>
+
+    <div class="loc-task-item__controllers">
+
+      <button
+        mat-icon-button aria-label="Edit task button"
+        (click)="edit($event)"
+        (mousedown)="stopPropagation($event)"
+      >
+        <mat-icon>create</mat-icon>
+      </button>
+
+      <button
+        mat-icon-button aria-label="Remove task button"
+        (click)="remove($event)"
+        (mousedown)="stopPropagation($event)"
+      >
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="loc-task-item__content" *ngIf="task?.editing">
+
+    <div class="loc-task-item__form">
+
+      <form [formGroup]="form">
+        <mat-form-field class="example-full-width">
+          <mat-label></mat-label>
+          <input
+            #inputField
+            matInput
+            formControlName="label"
+            placeholder="Digite a descrição da tarefa..."
+            (keydown.enter)="submit()"
+            (blur)="submit()"
+            (click)="stopPropagation($event)"
+            (mousedown)="stopPropagation($event)"
+          >
+        </mat-form-field>
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
