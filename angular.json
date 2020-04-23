@@ -126,6 +126,46 @@
           }
         }
       }
+    },
+    "task-state": {
+      "projectType": "library",
+      "root": "projects/task-state",
+      "sourceRoot": "projects/task-state/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/task-state/tsconfig.lib.json",
+            "project": "projects/task-state/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/task-state/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/task-state/src/test.ts",
+            "tsConfig": "projects/task-state/tsconfig.spec.json",
+            "karmaConfig": "projects/task-state/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/task-state/tsconfig.lib.json",
+              "projects/task-state/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ws-unit-tests",

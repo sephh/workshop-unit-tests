@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
-import {TaskSchema} from '../../../../schemas/task.schema';
+import {Task} from 'task-state';
 
 @Component({
   selector: 'loc-task-list',
@@ -9,10 +9,10 @@ import {TaskSchema} from '../../../../schemas/task.schema';
 })
 export class TaskListComponent implements OnInit {
 
-  @Input() tasks: TaskSchema[] = [];
+  @Input() tasks: Task[] = [];
 
   @Output() add = new EventEmitter();
-  @Output() remove = new EventEmitter<TaskSchema>();
+  @Output() remove = new EventEmitter<Task>();
 
   constructor() {
   }

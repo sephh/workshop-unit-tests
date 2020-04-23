@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {TaskSchema} from '../../../../schemas/task.schema';
+import {Observable} from 'rxjs';
+
+import {TasksFacade, Task} from 'task-state';
 
 @Component({
   selector: 'loc-tasks',
@@ -8,29 +10,25 @@ import {TaskSchema} from '../../../../schemas/task.schema';
 })
 export class TasksComponent implements OnInit {
 
-  tasks: TaskSchema[] = [];
+  task$: Observable<Task[]>;
 
-  constructor() {
+  constructor(private tasksFacade: TasksFacade) {
   }
 
   ngOnInit(): void {
+    this.task$ = this.tasksFacade.tasks$;
   }
 
   addEmptyTask() {
-    console.log(Math.random().toString(36).substr(2, 9));
-    this.tasks = [
-      ...this.tasks.map(t => ({...t, editing: false})),
-      {
-        id: Math.random().toString(36).substr(2, 9),
-        label: '',
-        index: this.tasks.length,
-        editing: true
-      }
-    ];
+    this.tasksFacade.createTask({
+      id: Math.random().toString(36).substr(2, 9),
+      label: '',
+      done: false
+    });
   }
 
-  removeTask(task: TaskSchema) {
-    this.tasks = this.tasks.filter(t => t !== task);
+  removeTask(task: Task) {
+    this.tasksFacade.deleteTask(task);
   }
 
 }
