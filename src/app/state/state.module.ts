@@ -1,17 +1,14 @@
 import {NgModule} from '@angular/core';
-import {TaskEffects, TaskStateModule} from 'task-state';
-import {EffectsModule} from '@ngrx/effects';
+import {TaskStateModule} from 'task-state';
 import {StoreModule} from '@ngrx/store';
-import {reducers} from './state';
+import {EffectsModule} from '@ngrx/effects';
 
 
 @NgModule({
   imports: [
-    TaskStateModule.forRoot({apiUrl: 'http:/naoexistemesmo.com:9001'}),
-    StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([
-      TaskEffects
-    ]),
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot(),
+    TaskStateModule.forRoot({apiUrl: 'http://naoexistemesmo.com:9001/'}),
   ]
 })
 export class StateModule {

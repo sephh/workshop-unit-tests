@@ -5,6 +5,9 @@
 export {
   TaskState,
   tasksReducer,
+  FEATURE_TASK_NAME,
+  selectSelectedTaskId,
+  selectSelectedTask,
   selectUpdatingTasks,
   selectLoadingTasks,
   selectDeletingTasks,

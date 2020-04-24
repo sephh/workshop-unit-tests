@@ -12,8 +12,10 @@ import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
 import {MatCardModule} from '@angular/material/card';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import {ItemNotFoundModule} from '../../shared/item-not-found/item-not-found.module';
-import {ReactiveFormsModule} from '@angular/forms';
+import {ItemNotFoundModule} from '../../shared/components/item-not-found/item-not-found.module';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {LoadingModule} from '../../shared/components/loading/loading.module';
+import {ScoredFilterModule} from '../../shared/pipes/scored-filter/scored-filter.module';
 
 
 
@@ -38,6 +40,9 @@ import {ReactiveFormsModule} from '@angular/forms';
     DragDropModule,
     ItemNotFoundModule,
     ReactiveFormsModule,
+    LoadingModule,
+    ScoredFilterModule,
+    FormsModule,
   ]
 })
 export class TaskModule { }

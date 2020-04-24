@@ -47,7 +47,7 @@ export class TaskService {
   }
 
   getMany(): Observable<Task[]> {
-    return of([])
+    return of(mockedTasks)
       .pipe(
         delay(1000)
       );

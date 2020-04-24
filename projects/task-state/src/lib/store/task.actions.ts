@@ -3,6 +3,7 @@ import {Action} from '@ngrx/store';
 import {Task} from '../model/task.model';
 
 export enum TasksActionTypes {
+  SelectTask = '[Tasks] select task',
   LoadTasks = '[Tasks] load tasks',
   TasksLoaded = '[Tasks] tasks loaded',
   AddTask = '[Tasks] add task',
@@ -11,6 +12,13 @@ export enum TasksActionTypes {
   TaskUpdated = '[Tasks] task updated',
   DeleteTask = '[Tasks] delete task',
   TaskDeleted = '[Tasks] task deleted'
+}
+
+export class SelectTask implements Action {
+  readonly type = TasksActionTypes.SelectTask;
+
+  constructor(public payload: string) {
+  }
 }
 
 export class LoadTasks implements Action {
@@ -66,7 +74,8 @@ export class TaskDeleted implements Action {
   }
 }
 
-export type TaskActions = LoadTasks
+export type TaskActions = SelectTask
+  | LoadTasks
   | TasksLoaded
   | AddTask
   | TaskAdded

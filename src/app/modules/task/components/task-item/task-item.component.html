@@ -1,8 +1,13 @@
 <div class="loc-task-item" *ngIf="task">
 
-  <div class="loc-task-item__content" *ngIf="!task?.editing">
+  <div class="loc-task-item__content" *ngIf="!editing">
 
-    <div class="loc-task-item__label">{{task.label}}</div>
+    <div
+      class="loc-task-item__label"
+      [class.loc-task-item__label--muted]="!task.label"
+    >
+      {{task.label || 'Sem descrição'}}
+    </div>
 
     <div class="loc-task-item__controllers">
 
@@ -26,7 +31,7 @@
 
   </div>
 
-  <div class="loc-task-item__content" *ngIf="task?.editing">
+  <div class="loc-task-item__content" *ngIf="editing">
 
     <div class="loc-task-item__form">
 
@@ -38,7 +43,8 @@
             matInput
             formControlName="label"
             placeholder="Digite a descrição da tarefa..."
-            (keydown.enter)="submit()"
+            (keydown.enter)="$event.stopPropagation();submit()"
+            (keydown)="$event.stopPropagation()"
             (blur)="submit()"
             (click)="stopPropagation($event)"
             (mousedown)="stopPropagation($event)"

@@ -35,7 +35,11 @@
               >
                 <mat-label>Encontre sua tarefa</mat-label>
 
-                <input matInput placeholder="Digite o nome da sua tarefa">
+                <input
+                  matInput
+                  [(ngModel)]="queryFilter"
+                  placeholder="Digite o nome da sua tarefa"
+                >
 
                 <mat-icon matSuffix>search</mat-icon>
 
@@ -43,11 +47,23 @@
             </div>
 
             <mat-card-content>
+
               <loc-task-list
-                [tasks]="task$ | async"
+                *ngIf="!(loading$ | async); else spinner"
+                [tasks]="(task$ | async) | scoredFilter : queryFilter: 'label' : 10"
+                [selectedTaskId]="(selectedTaskId$ | async)"
                 (add)="addEmptyTask()"
+                (edit)="selectTask($event)"
+                (update)="updateTask($event)"
+                (done)="doneTask($event)"
                 (remove)="removeTask($event)"
               ></loc-task-list>
+
+              <ng-template #spinner>
+                <loc-loading></loc-loading>
+              </ng-template>
+
+
             </mat-card-content>
 
           </mat-card>

@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 import {Task} from 'task-state';
+import {MatSelectionListChange} from '@angular/material/list';
 
 @Component({
   selector: 'loc-task-list',
@@ -10,8 +11,12 @@ import {Task} from 'task-state';
 export class TaskListComponent implements OnInit {
 
   @Input() tasks: Task[] = [];
+  @Input() selectedTaskId: string;
 
   @Output() add = new EventEmitter();
+  @Output() edit = new EventEmitter<Task>();
+  @Output() done = new EventEmitter<{ id: string; done: boolean; }>();
+  @Output() update = new EventEmitter<Task>();
   @Output() remove = new EventEmitter<Task>();
 
   constructor() {
@@ -20,8 +25,8 @@ export class TaskListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  updateTasks(evt: any) {
-    console.log(evt);
+  selectionChange(evt: MatSelectionListChange) {
+    this.done.emit({id: evt.option.value, done: evt.option.selected});
   }
 
 }

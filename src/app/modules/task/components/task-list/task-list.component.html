@@ -1,7 +1,7 @@
 <mat-selection-list
   class="loc-task-list"
   *ngIf="tasks?.length"
-  (selectionChange)="updateTasks($event)"
+  (selectionChange)="selectionChange($event)"
 >
 
   <mat-list-option
@@ -10,11 +10,15 @@
     [color]="'primary'"
     [checkboxPosition]="'before'"
     [value]="task.id"
+    [selected]="task.done"
   >
 
     <loc-task-item
       [task]="task"
+      [editing]="task.id === selectedTaskId"
+      (editTask)="edit.emit($event)"
       (removeTask)="remove.emit($event)"
+      (updateTask)="update.emit($event)"
     ></loc-task-item>
 
   </mat-list-option>

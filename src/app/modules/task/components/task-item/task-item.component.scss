@@ -21,6 +21,10 @@
   }
 
   &__label {
+    &--muted{
+      font-style: italic;
+      color: #ccc;
+    }
   }
 
   &__form {

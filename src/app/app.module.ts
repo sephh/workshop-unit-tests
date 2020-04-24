@@ -9,7 +9,7 @@ import {StateModule} from './state/state.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

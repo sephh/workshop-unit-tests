@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild, ElementRef, ChangeDetectorRef, AfterViewInit} from '@angular/core';
-import {TaskSchema} from '../../../../schemas/task.schema';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {Task} from 'task-state';
 
 @Component({
   selector: 'loc-task-item',
@@ -11,10 +11,11 @@ export class TaskItemComponent implements OnInit, AfterViewInit {
 
   @ViewChild('inputField', {static: false}) inputField: ElementRef;
 
-  @Input() task: TaskSchema;
-  @Output() removeTask = new EventEmitter<TaskSchema>();
-  @Output() editTask = new EventEmitter<TaskSchema>();
-  @Output() updateTask = new EventEmitter<TaskSchema>();
+  @Input() editing: boolean;
+  @Input() task: Task;
+  @Output() removeTask = new EventEmitter<Task>();
+  @Output() editTask = new EventEmitter<Task>();
+  @Output() updateTask = new EventEmitter<Task>();
 
   form: FormGroup;
 
@@ -28,7 +29,7 @@ export class TaskItemComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.task && this.task.editing) {
+    if (this.task && this.editing) {
       this.setFocus();
       this.cdRef.detectChanges();
     }
@@ -41,7 +42,9 @@ export class TaskItemComponent implements OnInit, AfterViewInit {
   }
 
   setFocus() {
-    this.inputField.nativeElement.focus();
+    if (this.inputField) {
+      this.inputField.nativeElement.focus();
+    }
   }
 
   remove(evt: MouseEvent) {
@@ -52,21 +55,21 @@ export class TaskItemComponent implements OnInit, AfterViewInit {
   edit(evt: MouseEvent) {
     this.stopPropagation(evt);
     this.form.controls.label.setValue(this.task.label);
-    this.task.editing = true;
+    this.editing = true;
+    this.editTask.emit(this.task);
 
     this.cdRef.detectChanges();
     this.setFocus();
-
-    this.editTask.emit(this.task);
   }
 
   submit() {
     const body = this.form.getRawValue();
 
-    this.task.editing = false;
-    this.task.label = body.label;
-
-    this.updateTask.emit(this.task);
+    if (this.task.label !== body.label) {
+      this.updateTask.emit({...this.task, ...body});
+    } else {
+      this.editTask.emit(null);
+    }
   }
 
   stopPropagation(evt: MouseEvent) {

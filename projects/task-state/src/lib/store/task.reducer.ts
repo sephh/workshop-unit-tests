@@ -4,7 +4,10 @@ import {createFeatureSelector, createSelector} from '@ngrx/store';
 import {TasksActionTypes, TaskActions} from './task.actions';
 import {Task} from '../model/task.model';
 
+export const FEATURE_TASK_NAME = 'tasks';
+
 export interface TaskState extends EntityState<Task> {
+  selectedTaskId: string;
   adding: boolean;
   deleting: boolean;
   loading: boolean;
@@ -14,57 +17,59 @@ export interface TaskState extends EntityState<Task> {
 export const adapter: EntityAdapter<Task> = createEntityAdapter<Task>();
 
 export const initialState: TaskState = adapter.getInitialState({
+  selectedTaskId: null,
   adding: false,
   deleting: false,
   loading: false,
   updating: false,
 });
 
-export const tasksReducer = {
-  tasks: function(state = initialState, action: TaskActions): TaskState {
-    switch (action.type) {
-      case TasksActionTypes.TasksLoaded:
-        return adapter.addMany(
-          action.payload,
-          {...state, loading: false}
-        );
+export function tasksReducer(state = initialState, action: TaskActions): TaskState {
+  switch (action.type) {
+    case TasksActionTypes.SelectTask:
+      return {...state, selectedTaskId: action.payload};
 
-      case TasksActionTypes.TaskAdded:
-        return adapter.addOne(
-          action.payload,
-          {...state, adding: false}
-        );
+    case TasksActionTypes.TasksLoaded:
+      return adapter.addMany(
+        action.payload,
+        {...state, loading: false}
+      );
 
-      case TasksActionTypes.UpdateTask:
-        return adapter.updateOne(
-          {id: action.payload.id, changes: action.payload},
-          {...state, updating: false}
-        );
+    case TasksActionTypes.TaskAdded:
+      return adapter.addOne(
+        action.payload,
+        {...state, adding: false}
+      );
 
-      case TasksActionTypes.DeleteTask:
-        return adapter.removeOne(
-          action.payload.id,
-          {...state, deleting: false}
-        );
+    case TasksActionTypes.UpdateTask:
+      return adapter.updateOne(
+        {id: action.payload.id, changes: action.payload},
+        {...state, updating: false}
+      );
 
-      case TasksActionTypes.AddTask:
-        return adapter.addOne(
-          action.payload,
-          {...state, adding: true}
-        );
+    case TasksActionTypes.DeleteTask:
+      return adapter.removeOne(
+        action.payload.id,
+        {...state, deleting: false}
+      );
 
-      case TasksActionTypes.TaskDeleted:
-        return {...state, deleting: true};
+    case TasksActionTypes.AddTask:
+      return adapter.addOne(
+        action.payload,
+        {...state, adding: true}
+      );
 
-      case TasksActionTypes.LoadTasks:
-        return {...state, loading: true};
+    case TasksActionTypes.TaskDeleted:
+      return {...state, deleting: true};
 
-      case TasksActionTypes.TaskUpdated:
-        return {...state, updating: true};
+    case TasksActionTypes.LoadTasks:
+      return {...state, loading: true};
 
-      default:
-        return state;
-    }
+    case TasksActionTypes.TaskUpdated:
+      return {...state, updating: true};
+
+    default:
+      return state;
   }
 };
 
@@ -74,7 +79,12 @@ export const tasksReducer = {
 
 const {selectIds, selectEntities, selectAll} = adapter.getSelectors();
 
-const taskState = createFeatureSelector<TaskState>('tasks');
+const taskState = createFeatureSelector<TaskState>(FEATURE_TASK_NAME);
+
+export const selectSelectedTaskId = createSelector(
+  taskState,
+  (state) => state.selectedTaskId
+);
 
 export const selectTaskIds = createSelector(
   taskState,
@@ -87,6 +97,12 @@ export const selectTaskEntities = createSelector(
 export const selectAllTasks = createSelector(
   taskState,
   selectAll
+);
+
+export const selectSelectedTask = createSelector(
+  selectTaskEntities,
+  selectSelectedTaskId,
+  (entities, id) => entities[id]
 );
 export const selectAddingTasks = createSelector(
   taskState,
