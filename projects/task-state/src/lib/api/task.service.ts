@@ -1,37 +1,10 @@
 import {Inject, Injectable} from '@angular/core';
 import {Task} from '../model/task.model';
 import {Observable, of} from 'rxjs';
-import {delay} from 'rxjs/operators';
+import {delay, map} from 'rxjs/operators';
 import {uid} from '../utils/utils';
 import {API_URL} from '../tokens';
-
-const mockedTasks: Task[] = [
-  {
-    id: uid(),
-    done: true,
-    label: 'Criar repositório para o workshop'
-  },
-  {
-    id: uid(),
-    done: true,
-    label: 'Adicionar projeto base Todo List'
-  },
-  {
-    id: uid(),
-    done: true,
-    label: 'Adicionar ngrx ao projeto'
-  },
-  {
-    id: uid(),
-    done: false,
-    label: 'Dividir projeto em branchs'
-  },
-  {
-    id: uid(),
-    done: false,
-    label: 'Apresentar o produto no workshop'
-  },
-];
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +12,7 @@ const mockedTasks: Task[] = [
 export class TaskService {
   model = 'tasks';
 
-  constructor(@Inject(API_URL) private apiUrl) {
+  constructor(@Inject(API_URL) private apiUrl, private http: HttpClient) {
   }
 
   get url(): string {
@@ -47,9 +20,10 @@ export class TaskService {
   }
 
   getMany(): Observable<Task[]> {
-    return of(mockedTasks)
+    return this.http.get<{ data: Task[] }>(this.apiUrl)
       .pipe(
-        delay(1000)
+        delay(1000),
+        map(res => res.data)
       );
   }
 

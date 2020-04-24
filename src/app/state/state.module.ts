@@ -8,7 +8,7 @@ import {EffectsModule} from '@ngrx/effects';
   imports: [
     StoreModule.forRoot({}),
     EffectsModule.forRoot(),
-    TaskStateModule.forRoot({apiUrl: 'http://naoexistemesmo.com:9001/'}),
+    TaskStateModule.forRoot({apiUrl: 'http://localhost:4200/assets/json/mocked-tasks.json'}),
   ]
 })
 export class StateModule {
