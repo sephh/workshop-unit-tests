@@ -27,7 +27,7 @@ npm i -D jest @types/jest @angular-builders/jest
 Esse pacote é opcional, mas é muito importante para nossa estratégia de testes.
 
 ```
-npm install --save-dev @testing-library/angular
+npm install --save-dev @testing-library/angular @testing-library/jest-dom
 ```
 
 ## Atualizar o tsconfig.spec.json
