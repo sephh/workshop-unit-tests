@@ -2,5 +2,10 @@
   class="loc-header"
   color="primary"
 >
-  <a routerLink="/"><loc-logo></loc-logo></a>
+  <a
+    [routerLink]="['/']"
+    data-testid="loc-header-link"
+  >
+    <loc-logo></loc-logo>
+  </a>
 </mat-toolbar>
