@@ -1,20 +1,21 @@
-import {render} from '@testing-library/angular';
-
-import {LogoComponent} from './logo.component';
+import {render, RenderResult} from '@testing-library/angular';
 import {ComponentFixture} from '@angular/core/testing';
 
+import {LogoComponent} from './logo.component';
+
 describe('LogoComponent', () => {
-  let component: LogoComponent;
+  let renderResult: RenderResult<LogoComponent>;
   let fixture: ComponentFixture<LogoComponent>;
+  let component: LogoComponent;
 
   beforeEach(async () => {
-    const {fixture: componentFixture} = await render(LogoComponent);
-    fixture = componentFixture;
+    renderResult = await render(LogoComponent, {});
+    fixture = renderResult.fixture;
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    const {container} = renderResult;
+    expect(container).toBeInTheDocument();
   });
 });

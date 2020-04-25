@@ -1,35 +1,29 @@
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AppComponent } from './app.component';
+import {render, RenderResult} from '@testing-library/angular';
+import {ComponentFixture} from '@angular/core/testing';
+import {AppComponent} from './app.component';
+import {HeaderModule} from './core/layout/header/header.module';
+import {LogoModule} from './core/layout/logo/logo.module';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('AppComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
+  let renderResult: RenderResult<AppComponent>;
+  let fixture: ComponentFixture<AppComponent>;
+  let component: AppComponent;
+
+  beforeEach(async () => {
+    renderResult = await render(AppComponent, {
       imports: [
-        RouterTestingModule
+        RouterTestingModule,
+        HeaderModule,
+        LogoModule
       ],
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  }));
-
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    });
+    fixture = renderResult.fixture;
+    component = fixture.componentInstance;
   });
 
-  it(`should have as title 'ws-unit-tests'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('ws-unit-tests');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('ws-unit-tests app is running!');
+  it('should create', () => {
+    const {container} = renderResult;
+    expect(container).toBeInTheDocument();
   });
 });
