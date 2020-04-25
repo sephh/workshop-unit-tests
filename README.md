@@ -1,4 +1,4 @@
-# Setup
+# 01 - Setup
 
 Nessa etapa vamos remover o Karma e configurar o Jest no projeto.
 
