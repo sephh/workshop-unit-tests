@@ -1,25 +1,30 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {render, RenderResult} from '@testing-library/angular';
+import {ComponentFixture} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
 
-import { TaskItemComponent } from './task-item.component';
+import {TaskItemComponent} from './task-item.component';
 
 describe('TaskItemComponent', () => {
-  let component: TaskItemComponent;
+  let renderResult: RenderResult<TaskItemComponent>;
   let fixture: ComponentFixture<TaskItemComponent>;
+  let component: TaskItemComponent;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TaskItemComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TaskItemComponent);
+  beforeEach(async () => {
+    renderResult = await render(TaskItemComponent, {
+      imports:[
+        MatIconModule,
+        MatFormFieldModule,
+        ReactiveFormsModule
+      ]
+    });
+    fixture = renderResult.fixture;
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    const {container} = renderResult;
+    expect(container).toBeInTheDocument();
   });
 });

@@ -1,25 +1,39 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {render, RenderResult} from '@testing-library/angular';
+import {ComponentFixture} from '@angular/core/testing';
+import {MatIconModule} from '@angular/material/icon';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatListModule} from '@angular/material/list';
+import {ReactiveFormsModule} from '@angular/forms';
 
-import { TaskListComponent } from './task-list.component';
+import {TaskListComponent} from './task-list.component';
+import {TaskItemComponent} from '../task-item/task-item.component';
+import {ItemNotFoundModule} from '../../../../shared/components/item-not-found/item-not-found.module';
 
 describe('TaskListComponent', () => {
-  let component: TaskListComponent;
+  let renderResult: RenderResult<TaskListComponent>;
   let fixture: ComponentFixture<TaskListComponent>;
+  let component: TaskListComponent;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TaskListComponent ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(async () => {
+    renderResult = await render(TaskListComponent, {
+      declarations:[
+        TaskItemComponent,
+      ],
+      imports:[
+        MatIconModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        MatListModule,
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TaskListComponent);
+        ItemNotFoundModule
+      ]
+    });
+    fixture = renderResult.fixture;
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    const {container} = renderResult;
+    expect(container).toBeInTheDocument();
   });
 });
