@@ -1,4 +1,4 @@
-# 04 - Testando rotas
+# 03 - Testando rotas
 
 Vamos repetir o mesmo procedimento feito no capítulo anterior, mas no HeaderComponent.
 
