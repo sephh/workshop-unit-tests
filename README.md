@@ -1,27 +1,209 @@
-# WsUnitTests
+# Setup
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.1.
+Nessa etapa vamos remover o Karma e configurar o Jest no projeto.
 
-## Development server
+## Remova o Karma e suas configs
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```
+npm remove karma karma-chrome-launcher karma-coverage-istanbul-reporter karma-jasmine karma-jasmine-html-reporter
+```
 
-## Code scaffolding
+```
+rm ./karma.conf.js ./src/test.ts
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```
+rm ./projects/task-state/karma.conf.js ./projects/task-state/src/test.ts
+```
 
-## Build
+## Instalar o [Jest](https://jestjs.io/docs/en/getting-started)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```
+npm i -D jest @types/jest @angular-builders/jest
+```
 
-## Running unit tests
+## Instalar o [Angular testing library](https://testing-library.com/docs/angular-testing-library/intro)
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Esse pacote é opcional, mas é muito importante para nossa estratégia de testes.
 
-## Running end-to-end tests
+```
+npm install --save-dev @testing-library/angular
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+## Atualizar o tsconfig.spec.json
 
-## Further help
+Na raiz:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./out-tsc/spec",
+    "types": [
+      "jest",
+      "node"
+    ],
+    "paths": {
+      "task-state": [
+        "dist/task-state/task-state",
+        "dist/task-state"
+      ]
+    },
+    "sourceMap": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowJs": true,
+    "target": "es2015",
+    "lib": ["es2018", "es2015"]
+  },
+  "files": [
+    "src/polyfills.ts"
+  ],
+  "include": [
+    "node_modules/**/*.d.ts",
+    "src/**/*.spec.ts",
+    "setupJest.ts"
+  ]
+}
+```
+
+Em projects/task-state:
+
+```
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/spec",
+    "types": [
+      "jest",
+      "node"
+    ]
+  },
+  "include": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ]
+}
+```
+
+## Criar o arquivo setupJest.ts
+
+Vamos criar o arquivo `setupJest.ts` na raiz.
+
+```
+import 'jest-preset-angular';
+```
+
+## Criar o arquivo base de configuração
+
+Vamos criar o arquivo `jest.base.config.js` na raiz.
+
+```
+module.exports = {
+  globals: {
+    'ts-jest': {
+      tsConfig: '<rootDir>/tsconfig.spec.json',
+      stringifyContentPathRegex: '\\.html$',
+      astTransformers: [
+        'jest-preset-angular/build/InlineFilesTransformer',
+        'jest-preset-angular/build/StripStylesTransformer'
+      ],
+    },
+  },
+  transform: {
+    '^.+\\.(ts|js|html)$': 'ts-jest',
+  },
+  moduleFileExtensions: ['ts', 'html', 'js', 'json'],
+  moduleNameMapper: {
+    '^src/(.*)$': '<rootDir>/src/$1',
+    '^app/(.*)$': '<rootDir>/src/app/$1',
+    '^assets/(.*)$': '<rootDir>/src/assets/$1',
+    '^environments/(.*)$': '<rootDir>/src/environments/$1',
+  },
+  collectCoverageFrom: [
+    "projects/task-state/src/lib/**/*.ts",
+    "src/app/**/*.ts",
+    "!src/app/**/*.module.ts",
+    "!src/app/**/*.array.ts",
+    "!src/app/**/*.model.ts",
+    "!src/app/fragmentTypes.ts"
+  ],
+  modulePaths: ['<rootDir>/dist'],
+  transformIgnorePatterns: ['node_modules/(?!@ngrx)'],
+  snapshotSerializers: [
+    'jest-preset-angular/build/AngularSnapshotSerializer.js',
+    'jest-preset-angular/build/HTMLCommentSerializer.js',
+  ],
+  setupFilesAfterEnv: [
+    "./node_modules/@angular-builders/jest/dist/jest-config/setup.js",
+    "./setupJest.ts"
+  ],
+};
+```
+
+## Criar o arquivo de configuração específico para o app
+
+Vamos criar o arquivo `jest.app.config.js` na raiz.
+
+```
+const baseConfig = require('./jest.base.config');
+
+module.exports = {
+  ...baseConfig,
+  modulePathIgnorePatterns: ['projects/.*/package.json'],
+  roots: ['<rootDir>/src'],
+  modulePaths: ['<rootDir>/dist']
+};
+```
+
+## Criar o arquivo de configuração específico para a library.
+
+Vamos criar o arquivo `jest.lib.config.js` na raiz.
+
+```
+const baseConfig = require('./jest.base.config');
+
+module.exports = {
+  ...baseConfig,
+  roots: ['<rootDir>/projects']
+};
+```
+
+## Configurar o angular.json
+
+Para o projeto:
+
+```
+"projects": {
+    "ws-unit-tests": {
+      ...
+      "architect": {
+        ...
+        "test": {
+          "builder": "@angular-builders/jest:run",
+          "options": {
+            "configPath": "./jest.app.config.js"
+          }
+        },
+...
+```
+
+Para a lib:
+
+```
+  "projects": {
+    ...
+    "task-state": {
+      ...
+      "architect": {
+        ...
+        "test": {
+          "builder": "@angular-builders/jest:run",
+          "options": {
+            "configPath": "./jest.lib.config.js"
+          }
+        },
+```
