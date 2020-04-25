@@ -1,8 +1,7 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {RouterModule} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { LogoComponent } from './logo.component';
 
-import {LogoComponent} from './logo.component';
 
 @NgModule({
   declarations: [LogoComponent],
@@ -11,8 +10,6 @@ import {LogoComponent} from './logo.component';
   ],
   imports: [
     CommonModule,
-    RouterModule
   ]
 })
-export class LogoModule {
-}
+export class LogoModule { }
