@@ -95,6 +95,7 @@ Vamos criar o arquivo `setupJest.ts` na raiz.
 
 ```
 import 'jest-preset-angular';
+import '@testing-library/jest-dom';
 ```
 
 ## Criar o arquivo base de configuração
