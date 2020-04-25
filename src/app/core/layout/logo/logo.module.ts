@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LogoComponent } from './logo.component';
-import {RouterModule} from '@angular/router';
-
 
 
 @NgModule({
@@ -12,7 +10,6 @@ import {RouterModule} from '@angular/router';
   ],
   imports: [
     CommonModule,
-    RouterModule
   ]
 })
 export class LogoModule { }
