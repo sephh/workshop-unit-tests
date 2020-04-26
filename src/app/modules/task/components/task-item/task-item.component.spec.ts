@@ -13,7 +13,7 @@ describe('TaskItemComponent', () => {
 
   beforeEach(async () => {
     renderResult = await render(TaskItemComponent, {
-      imports:[
+      imports: [
         MatIconModule,
         MatFormFieldModule,
         ReactiveFormsModule
@@ -26,5 +26,17 @@ describe('TaskItemComponent', () => {
   it('should create', () => {
     const {container} = renderResult;
     expect(container).toBeInTheDocument();
+  });
+
+  it('should check a task', () => {
+    expect(false).toBeTruthy();
+  });
+
+  it('should delete a task', () => {
+    expect(false).toBeTruthy();
+  });
+
+  it('should edit a task', () => {
+    expect(false).toBeTruthy();
   });
 });
