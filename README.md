@@ -1,156 +1,189 @@
-# 04 - Teste Builder e Mock
+# 04 - Mock e Teste Builder
 
-Vamos repetir o mesmo procedimento feito no capítulo anterior, mas no HeaderComponent.
+Em testes unitários muitas vezes precisamos simular algum comportamento ou algum dado, para manter a unidade do teste.
 
-## HeaderComponent
+Para isso vamos introduzir o conceito de mock.
 
-Vamos testar o component que esta na pasta `src/core/layout/header`.
+Um mock simula o fucionamento ou dado, de outra parte do código que não faz parte do componente que está sendo testado.
 
-Substitua o código do arquivo `header.component.spec.ts`
+Vamos testar o TaskItemComponent, para entender isso na prática.
+ 
+## TaskItemComponent
+
+Vamos testar o component que esta na pasta `src/modules/task/components/task-item`.
+
+No teste `should have a description` vamos criar um dado fake de uma task.
 
 ```
-import {ComponentFixture} from '@angular/core/testing';
-import {HeaderComponent} from './header.component';
-
-describe('HeaderComponent', () => {
-  let renderResult: RenderResult<HeaderComponent>;
-  let fixture: ComponentFixture<HeaderComponent>;
-  let component: HeaderComponent;
-
-  beforeEach(async () => {
-    renderResult = await render(HeaderComponent, {});
-    fixture = renderResult.fixture;
-    component = fixture.componentInstance;
-  });
-
-  it('should create', function() {
+it('should have a description', () => {
     const {container} = renderResult;
-    expect(container).toBeTruthy();
-  });
+
+    component.task = {
+      id: 'mock-id',
+      label: 'Minha tarefa',
+      done: false
+    };
+
+    fixture.detectChanges();
+
+    expect(container.textContent).toMatch(component.task.label);
 });
 ```
 
-Rode o comando na raiz
+Agora vamos testar o `should have a default description`.
 
 ```
-npm run test:app -- --watch
+it('should have a default description', () => {
+    const {container} = renderResult;
+
+    component.task = {
+      id: 'mock-id',
+      label: '',
+      done: false
+    };
+
+    fixture.detectChanges();
+
+    expect(container.textContent).toMatch(component.labelDefault);
+});
 ```
 
-Aperte a tecla `p` e depois aperte novamente `p` para escolher o arquivo que quer testar.
+Nós repetimos duas vezes a criação da task para testar um atributo diferente da classe. 
 
-Digite `header.component` e aprte a tecla `Enter`.
+Se essa classe tiver vários atributos nós vamos ter que instanciar um objeto diferente a cada teste. E pior, temos que adicionar todos os campos obrigatórios, mesmo que nosso objetivo seja testar um único atributo.
 
-Oops!! Parece que não deu certo.
+Nós poderíamos colocar esse dado no `beforeEach`, mas se outro componente precisasse simular o mesmo objeto, essa lógica seria replicada. E se um atributo obrigatório fosse acrescentado teríamos que atualizar todos os `beforeEach` de cada teste.
 
-## Corrigindo os erros de dependência
+## Teste Builder
 
-Atualize a função de render com as dependências necessárias e o teste irá passar.
+Teste builder ao resgate!
+
+Com esse pattern nós podemos criar diversos objetos de forma mais escalável.
+
+Vamos refatorar os testes.
 
 ```
-renderResult = await render(HeaderComponent, {
-      imports:[
-        LogoModule,
-        MatToolbarModule,
-        RouterTestingModule
+describe('TaskItemComponent', () => {
+    let taskTestBuilder;
+    ...
+    
+    beforeEach(async () => {
+        renderResult = await render(TaskItemComponent, {
+          imports: [
+            MatIconModule,
+            MatFormFieldModule,
+            ReactiveFormsModule
+          ]
+        });
+        taskTestBuilder = new TaskTestBuilder();
+        fixture = renderResult.fixture;
+        component = fixture.componentInstance;
+    });
+
+  ...
+```
+
+```
+it('should have a description', () => {
+    const {container} = renderResult;
+
+    component.task = taskTestBuilder
+      .withLabel('Minha tarefa')
+      .build();
+
+    ....
+```
+
+```
+it('should have a default description', () => {
+    const {container} = renderResult;
+
+    component.task = taskTestBuilder
+      .withLabel('')
+      .build();
+
+    ...
+```
+
+## Mock functions
+
+Agora vamos simular algumas funções.
+
+Nosso primeiro mock de função vai ser o o método stopPropagation, que apesar de fazer parte do componente ele é axiliar e serve para disparar eventos de elementos HTML, o que não deixar de ser uma dependência.
+
+```
+beforeEach(async () => {
+    renderResult = await render(TaskItemComponent, {
+      imports: [
+        MatIconModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        MatInputModule,
       ]
     });
-```
-
-## Checando se a logo possui um link
-
-Agora vamos verificar se nossa logo tem um link.
-
-```
-it('should navigate on logo click', async () => {
-    const {navigate} = renderResult;
-    const headerLink = screen.getByTestId('loc-header-link') as HTMLAnchorElement;
-    
-    expect(headerLink.pathname).toBe('/');
-    
-    const isNavigate = await navigate(headerLink);
-    
-    expect(isNavigate).toBeTruthy();
-});
-```
-
-## Testando a navegação para outro componente
-
-Para esse tipo de teste é necessário que seu componente possua um `router-outlet` e é o caso do AppComponent.
-
-Vamos testá-lo, então.
-
-Primeiro vamos criar nosso teste básico de renderização.
-
-```
-import {render, RenderResult} from '@testing-library/angular';
-import {ComponentFixture} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-
-import {AppComponent} from './app.component';
-import {HeaderModule} from './core/layout/header/header.module';
-
-describe('AppComponent', () => {
-  let renderResult: RenderResult<AppComponent>;
-  let fixture: ComponentFixture<AppComponent>;
-  let component: AppComponent;
-
-  beforeEach(async () => {
-    renderResult = await render(AppComponent, {
-      imports: [
-        HeaderModule,
-        RouterTestingModule
-      ],
-    });
+    taskTestBuilder = new TaskTestBuilder();
     fixture = renderResult.fixture;
     component = fixture.componentInstance;
+    component.stopPropagation = jest.fn();
   });
+```
 
-  it('should create', () => {
-    const {container} = renderResult;
-    expect(container).toBeInTheDocument();
-  });
+Além do mock foi acrescentada a dependência `MatInputModule`, que nós havíamos esquecido.
+
+E nosso teste `should delete a task` fica assim:
+
+```
+it('should delete a task', () => {
+    const {getByTitle} = renderResult;
+    const removeTaskMock = jest.fn((task: Task) => task);
+
+    component.task = taskTestBuilder.build();
+    component.removeTask.emit = removeTaskMock;
+
+    fixture.detectChanges();
+
+    const removeButton = getByTitle('Remover');
+
+    removeButton.click();
+
+    expect(removeTaskMock).toBeCalledTimes(1);
+    expect(removeTaskMock).toHaveBeenCalledWith(component.task);
+    expect(removeTaskMock.mock.results[0].value).toBe(component.task);
+    expect(component.stopPropagation).toHaveBeenCalled();
 });
 ```
 
-Agora vamos adicionar nossa rota e o teste de navegação.
-
-Atualize a função de render e importe nosso DummyComponent.
+E nosso teste `should edit a task` fica assim:
 
 ```
-import {DummyTestComponent} from '../../__mocks__/DummyComponent';
+it('should edit a task', () => {
+    const {getByTitle, getByPlaceholderText} = renderResult;
+    const editTaskMock = jest.fn((task: Task) => task);
+    const setValueMock = jest.fn((text: string) => text);
+
+    component.task = taskTestBuilder.build();
+    component.editTask.emit = editTaskMock;
+
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    component.form.controls.label.setValue = setValueMock;
+
+    const editButton = getByTitle('Editar');
+
+    editButton.click();
+
+    fixture.detectChanges();
+
+    const inputElement = getByPlaceholderText('Digite a descrição da tarefa...');
+
+    expect(component.stopPropagation).toHaveBeenCalled();
+    expect(setValueMock).toHaveBeenCalledTimes(1);
+    expect(setValueMock).toHaveBeenCalledWith(component.task.label);
+    expect(editTaskMock).toHaveBeenCalledTimes(1);
+    expect(editTaskMock).toHaveBeenCalledWith(component.task);
+    expect(editTaskMock.mock.results[0].value).toBe(component.task);
+    expect(component.editing).toBe(true);
+    expect(inputElement).toBe(document.activeElement);
+});
 ```
-
-```
-renderResult = await render(AppComponent, {
-      declarations: [
-        DummyTestComponent
-      ],
-      imports: [
-        HeaderModule
-      ],
-      routes: [
-        {
-          path: '',
-          component: DummyTestComponent
-        }
-      ]
-    });
-```
-
-E por fim vamos adicionar o teste.
-
-```
-it('should navigate to dummy component', async () => {
-    const {navigate} = renderResult;
-    const headerLink = screen.getByTestId('loc-header-link');
-
-    await navigate(headerLink);
-
-    const dummyTestComponent = screen.getByText(/Hello World!/);
-
-    expect(dummyTestComponent).toBeInTheDocument();
-  });
-```
-
-Tudo deve funcionar.
-

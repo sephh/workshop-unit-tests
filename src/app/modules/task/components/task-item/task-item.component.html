@@ -6,13 +6,15 @@
       class="loc-task-item__label"
       [class.loc-task-item__label--muted]="!task.label"
     >
-      {{task.label || 'Sem descrição'}}
+      {{task.label || labelDefault}}
     </div>
 
     <div class="loc-task-item__controllers">
 
       <button
-        mat-icon-button aria-label="Edit task button"
+        mat-icon-button
+        aria-label="Edit task button"
+        title="Editar"
         (click)="edit($event)"
         (mousedown)="stopPropagation($event)"
       >
@@ -20,7 +22,9 @@
       </button>
 
       <button
-        mat-icon-button aria-label="Remove task button"
+        mat-icon-button
+        aria-label="Remove task button"
+        title="Remover"
         (click)="remove($event)"
         (mousedown)="stopPropagation($event)"
       >
