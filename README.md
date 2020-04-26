@@ -1,18 +1,18 @@
-# 04 - Mock e Teste Builder
+# 05 - Disparando Eventos
 
-Em testes unitários muitas vezes precisamos simular algum comportamento ou algum dado, para manter a unidade do teste.
+Agora vamos testar o disparo de alguns eventos usando a API `fireEvent` da lib `@testing-library/angular`.
 
-Para isso vamos introduzir o conceito de mock.
+Nosso componente tem um input e queremos saber se nossa tarefa está sendo salva quando o usuário aperta o `Enter` ou tira o foco do input.
 
-Um mock simula o fucionamento ou dado, de outra parte do código que não faz parte do componente que está sendo testado.
+## fireEvent
 
-Vamos testar o TaskItemComponent, para entender isso na prática.
- 
-## TaskItemComponent
+Vamos importar o `fireEvent`;
 
-Vamos testar o component que esta na pasta `src/modules/task/components/task-item`.
+```
+import {render, RenderResult, fireEvent} from '@testing-library/angular';
+```
 
-No teste `should have a description` vamos criar um dado fake de uma task.
+No teste `should save changes on keydown Enter` vamos disparar o evento keydown na tecla `Enter`.
 
 ```
 it('should have a description', () => {

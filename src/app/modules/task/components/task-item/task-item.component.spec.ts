@@ -1,4 +1,4 @@
-import {render, RenderResult} from '@testing-library/angular';
+import {render, RenderResult, fireEvent} from '@testing-library/angular';
 import {ComponentFixture} from '@angular/core/testing';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -110,8 +110,10 @@ describe('TaskItemComponent', () => {
   });
 
   it('should save changes on keydown Enter', () => {
+    expect(false).toBeTruthy();
   });
 
   it('should save changes on input blur', () => {
+    expect(false).toBeTruthy();
   });
 });
