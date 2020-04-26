@@ -116,4 +116,12 @@ describe('TaskItemComponent', () => {
   it('should save changes on input blur', () => {
     expect(false).toBeTruthy();
   });
+
+  it('should not save on Enter', () => {
+    expect(false).toBeTruthy();
+  });
+
+  it('should not save on blur', () => {
+    expect(false).toBeTruthy();
+  });
 });
