@@ -28,7 +28,11 @@ describe('TaskItemComponent', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('should check a task', () => {
+  it('should have a description', () => {
+    expect(false).toBeTruthy();
+  });
+
+  it('should have a default description', () => {
     expect(false).toBeTruthy();
   });
 
