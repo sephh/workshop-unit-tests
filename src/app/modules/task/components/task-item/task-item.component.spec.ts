@@ -108,4 +108,10 @@ describe('TaskItemComponent', () => {
     expect(component.editing).toBe(true);
     expect(inputElement).toBe(document.activeElement);
   });
+
+  it('should save changes on keydown Enter', () => {
+  });
+
+  it('should save changes on input blur', () => {
+  });
 });
