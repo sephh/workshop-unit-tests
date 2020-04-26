@@ -16,10 +16,10 @@ describe('TaskListComponent', () => {
 
   beforeEach(async () => {
     renderResult = await render(TaskListComponent, {
-      declarations:[
+      declarations: [
         TaskItemComponent,
       ],
-      imports:[
+      imports: [
         MatIconModule,
         MatFormFieldModule,
         ReactiveFormsModule,
@@ -35,5 +35,29 @@ describe('TaskListComponent', () => {
   it('should create', () => {
     const {container} = renderResult;
     expect(container).toBeInTheDocument();
+  });
+
+  it('should show tasks', () => {
+    expect(false).toBeTruthy();
+  });
+
+  it('should emit add events', () => {
+    expect(false).toBeTruthy();
+  });
+
+  it('should emit edit events', () => {
+    expect(false).toBeTruthy();
+  });
+
+  it('should emit done events', () => {
+    expect(false).toBeTruthy();
+  });
+
+  it('should emit update events', () => {
+    expect(false).toBeTruthy();
+  });
+
+  it('should emit remove events', () => {
+    expect(false).toBeTruthy();
   });
 });

@@ -18,6 +18,7 @@ export class TaskItemComponent implements OnInit, AfterViewInit {
   @Output() updateTask = new EventEmitter<Task>();
 
   form: FormGroup;
+  labelDefault = 'Sem descrição';
 
   constructor(
     private formBuilder: FormBuilder,
