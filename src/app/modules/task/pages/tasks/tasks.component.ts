@@ -17,7 +17,7 @@ export class TasksComponent implements OnInit {
 
   queryFilter: string = '';
 
-  constructor(private tasksFacade: TasksFacade) {
+  constructor(public tasksFacade: TasksFacade) {
   }
 
   ngOnInit(): void {
