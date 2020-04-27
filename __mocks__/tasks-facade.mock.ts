@@ -7,7 +7,6 @@ export class TasksFacadeMock {
   selectedTaskId$ = new BehaviorSubject<string>('');
 
   getTasks() {
-    this.tasks$.next([]);
   }
 
   createTask(task: Task) {
