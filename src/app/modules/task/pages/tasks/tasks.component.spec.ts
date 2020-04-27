@@ -55,6 +55,10 @@ describe('TasksComponent', () => {
     expect(false).toBeTruthy();
   });
 
+  it('should show no tasks message on screen', () => {
+    expect(false).toBeTruthy();
+  });
+
   it('should show loading on screen', () => {
     expect(false).toBeTruthy();
   });
