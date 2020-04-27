@@ -1,137 +1,80 @@
-# 05 - Disparando Eventos
+# 06 - Testando Serviços
 
-Agora vamos testar o disparo de alguns eventos usando `fireEvent` e `userEvent` da lib `@testing-library/angular`.
+Nessa branch nós vamos testar um componente com `injeções de dependência`.
 
-Nosso componente tem um input e queremos saber se nossa tarefa está sendo salva quando o usuário aperta o `Enter` ou tira o foco do input.
+Vamos aprender como usar e fazer um mock de um serviço.
 
-## fireEvent e userEvent
+## TasksComponent
 
-Vamos importar o `fireEvent` e o `userEvent`;
+Vamos ao teste do componente encontrado em `src/app/modules/task/pages/tasks/tasks.component.spec.ts`.
 
-```
-import {render, RenderResult, fireEvent, userEvent} from '@testing-library/angular';
-```
+A primeira coisa que vamos fazer é remover o import do `StateModule`, pois ele vai ser uma assunto para o próximo workshop.
 
-No teste `should save changes on keydown Enter` vamos disparar o evento keydown na tecla `Enter`.
+Vocês vão observar que ao rodar os testes novamente, o teste de render que passa agora emite um erro:
 
-```
-it('should save changes on keydown Enter', () => {
-  const {getByTitle, getByPlaceholderText} = renderResult;
-  const updateTaskMock = jest.fn((task: Task) => task);
-  const newLabel = 'Tarefa atualizada';
+`NullInjectorError: StaticInjectorError(DynamicTestModule)[Store]`
 
-  component.task = taskTestBuilder.build();
-  component.updateTask.emit = updateTaskMock;
+Isso acontece porque a Store era uma dependência carregada pelo módulo que nós removemos e ela está relacionada diretamente com a dependência `TasksFacade`, do nosso componente.
 
-  component.ngOnInit();
-  fixture.detectChanges();
+Como nosso propósito aqui não é falar sobre `Redux` e nem de `NGRX`, vamos criar um mock para o `TasksFacade` e remover essa dependência dele.
 
-  const editButton = getByTitle('Editar');
+## Injetando nosso mock
 
-  editButton.click();
-
-  fixture.detectChanges();
-
-  const inputElement = getByPlaceholderText('Digite a descrição da tarefa...');
-
-  userEvent.type(inputElement, newLabel);
-  fireEvent.keyDown(inputElement, {key: 'Enter', code: 'Enter'});
-
-  expect(updateTaskMock).toHaveBeenCalledTimes(1);
-  expect(updateTaskMock).not.toHaveBeenCalledWith(component.task);
-  expect(updateTaskMock.mock.results[0].value).toEqual({...component.task, label: newLabel});
-});
-```
-
-No próximo teste, `should save changes on blur`, a única coisa que muda é o evento disparado. Podemos criar uma função para não repetir o código.
+Vamos adicionar à nossa função `render` o atributo `providers` com o nosso mock.
 
 ```
-const saveOnEnterOrBlur = (event, options = {}) => {
-    const {getByTitle, getByPlaceholderText} = renderResult;
-    const updateTaskMock = jest.fn((task: Task) => task);
-    const newLabel = 'Tarefa atualizada';
+beforeEach(async () => {
+    renderResult = await render(TasksComponent, {
+      ...
+      providers:[
+        {
+          provide: TasksFacade,
+          useClass: TasksFacadeMock
+        }
+      ]
+    });
 
-    component.task = taskTestBuilder.build();
-    component.updateTask.emit = updateTaskMock;
+    ...
+``` 
 
-    component.ngOnInit();
-    fixture.detectChanges();
+Pronto, agora nosso teste de render não quebra mais.
 
-    const editButton = getByTitle('Editar');
+## Testes com o provider mockado
 
-    editButton.click();
-
-    fixture.detectChanges();
-
-    const inputElement = getByPlaceholderText('Digite a descrição da tarefa...');
-
-    userEvent.type(inputElement, newLabel);
-    event(inputElement, options);
-
-    expect(updateTaskMock).toHaveBeenCalledTimes(1);
-    expect(updateTaskMock).not.toHaveBeenCalledWith(component.task);
-    expect(updateTaskMock.mock.results[0].value).toEqual({...component.task, label: newLabel});
-}
-```
-
-Agora nossos testes podem ficar assim:
+É um teste semelhante aos que nós já fizemos com algumas novidades, por conta dos observables da dependência.
 
 ```
-it('should save changes on keydown Enter', () => {
-    saveOnEnterOrBlur(fireEvent.keyDown, { key: 'Enter', code: 'Enter' });
-});
-```
+it('should load tasks', async () => {
+    const {getByText} = renderResult;
+    tasksFacadeMock.flushTasks(tasks);
 
-```
-it('should save changes on blur', () => {
-    saveOnEnterOrBlur(fireEvent.blur);
-});
-```
-
-A mesma coisa acontece quando não se deve salvar a task, nesses eventos. 
-
-Então vamos criar uma função para isso também.
-
-```
-const dontSaveOnEnterOrBlur = (event, options = {}) => {
-    const {getByTitle, getByPlaceholderText} = renderResult;
-    const editTaskMock = jest.fn((task: Task) => task);
-    let editCallCounter = 0;
-
-    component.task = taskTestBuilder.build();
-    component.editTask.emit = editTaskMock;
-
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    const editButton = getByTitle('Editar');
-
-    editButton.click();
-    editCallCounter++;
+    const tasks$ = await component.task$
+      .pipe(
+        take(1)
+      ).toPromise();
+    const loading$ = await component.loading$
+      .pipe(
+        take(1)
+      ).toPromise();
+    const selectedTaskId$ = await component.selectedTaskId$
+      .pipe(
+        take(1)
+      ).toPromise();
 
     fixture.detectChanges();
 
-    const inputElement = getByPlaceholderText('Digite a descrição da tarefa...');
-
-    event(inputElement, options);
-    editCallCounter++;
-
-    expect(editTaskMock).toHaveBeenCalledTimes(editCallCounter);
-    expect(editTaskMock).toHaveBeenCalledWith(null);
-    expect(editTaskMock.mock.results[editCallCounter - 1].value).toEqual(null);
-}
-```
-
-E os testes ficariam assim:
-
-```
-it('should not save on Enter', () => {
-    dontSaveOnEnterOrBlur(fireEvent.keyDown, { key: 'Enter', code: 'Enter' });
+    tasks.forEach((t) => {
+      expect(getByText(t.label)).toBeInTheDocument();
+    });
+    expect(tasks$.length).toBe(3);
+    expect(loading$).toBe(false);
+    expect(selectedTaskId$).toBe('');
+    expect(component.tasksFacade.getTasks).toHaveBeenCalled();
 });
 ```
 
-```
-it('should not save on blur', () => {
-    dontSaveOnEnterOrBlur(fireEvent.blur);
-});
-```
+Agora não temos mais conteúdo novo.
+
+Vamos fazer juntos os demais testes. Espero que tenham gostado.
+
+Obrigado.
