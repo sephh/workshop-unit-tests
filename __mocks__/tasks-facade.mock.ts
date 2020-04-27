@@ -6,28 +6,27 @@ export class TasksFacadeMock {
   loading$ = new BehaviorSubject<boolean>(false);
   selectedTaskId$ = new BehaviorSubject<string>('');
 
-  getTasks() {
-  }
+  getTasks = jest.fn();
 
-  createTask(task: Task) {
+  createTask = jest.fn((task: Task) => {
     const currentTasks = this.tasks$.getValue();
     this.tasks$.next([...currentTasks, task]);
-  }
+  });
 
-  selectTask(id: string) {
+  selectTask = jest.fn((id: string) => {
     this.selectedTaskId$.next(id);
-  }
+  });
 
-  updateTask(task: Task) {
+  updateTask = jest.fn((task: Task) => {
     const currentTasks = this.tasks$.getValue();
     const updatedTasks = currentTasks.map(t => (t.id === task.id ? task : t));
     this.tasks$.next(updatedTasks);
-  }
+  });
 
-  deleteTask(task: Task) {
+  deleteTask = jest.fn((task: Task) => {
     const currentTasks = this.tasks$.getValue();
     this.tasks$.next(currentTasks.filter(t => t.id !== task.id));
-  }
+  });
 
   flushTasks(tasks: Task[]) {
     this.tasks$.next(tasks);
