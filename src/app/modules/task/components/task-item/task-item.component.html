@@ -1,6 +1,6 @@
 <div class="loc-task-item" *ngIf="task">
 
-  <div class="loc-task-item__content" *ngIf="!editing">
+  <div class="loc-task-item__content" [attr.data-testid]="task.id" *ngIf="!editing">
 
     <div
       class="loc-task-item__label"
