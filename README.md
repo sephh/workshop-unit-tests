@@ -70,7 +70,7 @@ Na raiz:
 }
 ```
 
-Em projects/task-state:
+Em projects/task-state/tsconfig.spec.json:
 
 ```
 {
@@ -204,7 +204,7 @@ Para a lib:
         "test": {
           "builder": "@angular-builders/jest:run",
           "options": {
-            "configPath": "./jest.lib.config.js"
+            "configPath": "../../jest.lib.config.js"
           }
         },
 ```
