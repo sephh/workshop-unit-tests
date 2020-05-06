@@ -1,9 +1,14 @@
 {
   "name": "task-state",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publishConfig": {
-    "registry": "https://pkgs.dev.azure.com/localiza/_packaging/LocalizaAtivos/npm/registry/",
+    "registry": "https://pkgs.dev.azure.com/localiza/Localiza/_packaging/PacotesNPM/npm/registry/",
     "always-auth": true
+  },
+  "dependencies": {
+    "@ngrx/effects": "^9.1.0",
+    "@ngrx/entity": "^9.1.0",
+    "@ngrx/store": "^9.1.0"
   },
   "peerDependencies": {
     "@angular/common": "^9.1.1",
