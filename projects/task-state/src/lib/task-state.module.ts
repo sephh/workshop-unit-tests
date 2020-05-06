@@ -12,6 +12,8 @@ import {TaskEffects} from './store/task.effects';
 @NgModule({
   imports: [
     HttpClientModule,
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot(),
     StoreModule.forFeature(FEATURE_TASK_NAME, tasksReducer),
     EffectsModule.forFeature([TaskEffects]),
   ],
@@ -22,7 +24,7 @@ import {TaskEffects} from './store/task.effects';
   ]
 })
 export class TaskStateModule {
-  static forRoot(config: { apiUrl: string; }): ModuleWithProviders {
+  static forRoot(config: { apiUrl: string; } = {apiUrl: 'http://localhost:3000'}): ModuleWithProviders {
     return {
       ngModule: TaskStateModule,
       providers: [

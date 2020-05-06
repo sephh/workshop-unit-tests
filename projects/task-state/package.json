@@ -1,6 +1,6 @@
 {
   "name": "task-state",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publishConfig": {
     "registry": "https://pkgs.dev.azure.com/localiza/Localiza/_packaging/PacotesNPM/npm/registry/",
     "always-auth": true
